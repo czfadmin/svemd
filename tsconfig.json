@@ -1,0 +1,14 @@
+{
+    "files": [],
+    "references": [
+        {
+            "path": "packages/svemd"
+        },
+        {
+            "path": "packages/plugin-gfm"
+        },
+        {
+            "path": "packages/plugin-highlight"
+        }
+    ]
+}
