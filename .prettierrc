@@ -1,5 +1,6 @@
 {
   "semi": false,
   "singleQuote": true,
-  "proseWrap": "never"
+  "proseWrap": "never",
+  "tabWidth": 4
 }

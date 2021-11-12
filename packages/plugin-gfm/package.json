@@ -1,18 +1,29 @@
 {
-    "name": "@svemd/plugin-gfm",
-    "version": "1.0.0",
-    "description": "",
-    "main": "src/index.ts",
-    "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1"
-    },
-    "keywords": [],
-    "author": "abchen",
-    "license": "ISC",
-    "dependencies": {
-        "remark-gfm": "^3.0.1"
-    },
-    "peerDependencies": {
-        "svemd": "1.0.0"
-    }
+  "name": "@svemd/plugin-gfm",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "main": "dist/index.cjs.js",
+  "module": "dist/index.esm.js",
+  "unpkg": "dist/index.min.js",
+  "jsdelivr": "dist/index.min.js",
+  "types": "lib/index.d.ts",
+  "keywords": [],
+  "author": "czfadmin",
+  "license": "ISC",
+  "dependencies": {
+    "remark-gfm": "^3.0.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/czfadmin/svemd.git",
+    "directory": "packages/plugin-gfm"
+  },
+  "files": [
+    "dist",
+    "lib"
+  ],
+  "packageManager": "pnpm"
 }

@@ -1,97 +1,195 @@
-import resolve from "@rollup/plugin-node-resolve";
-import babel from "@rollup/plugin-babel";
-import svelte from "rollup-plugin-svelte";
-import commonjs from "@rollup/plugin-commonjs";
-import replace from "@rollup/plugin-replace";
-import { terser } from "rollup-plugin-terser";
-import path from "path";
-import livereload from "rollup-plugin-livereload";
-import css from "rollup-plugin-css-only";
-import sveltePreprocess from "svelte-preprocess";
-import typescript from "@rollup/plugin-typescript";
-import json from "@rollup/plugin-json"
-const pkgRoot = path.resolve(__dirname, "./packages");
-const distRoot = path.resolve(__dirname, "./dist");
+import fs from 'fs-extra'
+import resolve from '@rollup/plugin-node-resolve'
+import babel from '@rollup/plugin-babel'
+import svelte from 'rollup-plugin-svelte'
+import commonjs from '@rollup/plugin-commonjs'
+import replace from '@rollup/plugin-replace'
+import { terser } from 'rollup-plugin-terser'
+import path from 'path'
+import _ from 'lodash'
+import vue from 'rollup-plugin-vue'
+import json from '@rollup/plugin-json'
+import css from 'rollup-plugin-css-only'
 
-const production = !process.env.ROLLUP_WATCH;
+const production = !process.env.ROLLUP_WATCH
+const umd = process.env.UMD
+const packages = fs.readdirSync(path.resolve(__dirname, 'packages'))
 
-function serve() {
-    let server;
-
-    function toExit() {
-        if (server) server.kill(0);
-    }
-
-    return {
-        writeBundle() {
-            if (server) return;
-            server = require("child_process").spawn(
-                "npm",
-                ["run", "start", "--", "--dev"],
-                {
-                    stdio: ["ignore", "inherit", "inherit"],
-                    shell: true,
-                }
-            );
-
-            process.on("SIGTERM", toExit);
-            process.on("exit", toExit);
-        },
-    };
-}
-
-export default {
-    input: path.join(pkgRoot, "svemd/src/index.ts"),
-    output: {
-        file: "public/dist/bundle.js",
-        format: "iife",
-        name: "app",
-        sourcemap: true,
-        dynamicsImportMeta: true,
-    },
-    plugins: [
-        json(),
-        svelte({
-            preprocess: sveltePreprocess({ sourceMap: !production }),
-            compilerOptions: {
-                // enable run-time checks when not in production
-                dev: !production,
+const configs = packages
+    .map((key) => {
+        const pkg = fs.readJsonSync(`./packages/${key}/package.json`)
+        if (pkg.private) return []
+        const inputFile = path.resolve('packages', key, 'lib/index.js')
+        const umdName = key.startsWith('plugin-')
+            ? _.camelCase(`svemd-${key}`)
+            : 'svemd'
+        /** @type {import('rollup').RollupOptions} */
+        const common = {
+            input: inputFile,
+            plugins: [
+                commonjs(),
+                svelte({
+                    compilerOptions: {
+                        dev: !production,
+                    },
+                }),
+                !key.startsWith('plugin-') && css({ output: 'bundle.css' }),
+                vue(),
+                resolve({
+                    browser: true,
+                    dedupe: ['svelte'],
+                }),
+                json(),
+                replace({
+                    preventAssignment: true, // fix warning
+                    'process.env.NODE_ENV': JSON.stringify(
+                        production ? 'production' : 'development'
+                    ),
+                }),
+            ],
+            watch: {
+                clearScreen: false,
             },
-        }),
+        }
 
-        // we'll extract any component CSS out into
-        // a separate file - better for performance
-        css({ output: "bundle.css" }),
+        /** @type {import('rollup').RollupOptions} */
+        const config = {
+            ...common,
+            output: [
+                {
+                    format: 'es',
+                    sourcemap: true,
+                    file: path.resolve('packages', key, pkg.module),
+                },
+                {
+                    format: 'cjs',
+                    sourcemap: true,
+                    file: path.resolve('packages', key, pkg.main),
+                    exports: 'auto', // fix warning
+                },
+            ],
+            external: [
+                /^codemirror-ssr/,
+                'hast-util-sanitize/lib/github.json',
+                ...Object.keys(pkg.dependencies || {}),
+                ...Object.keys(pkg.peerDependencies || {}),
+            ],
+        }
 
-        resolve({
-            browser: true,
-            dedupe: ["svelte"],
-        }),
-        commonjs(),
-        babel({
-            exclude: "node_modules/**",
-            babelHelpers: "bundled",
-        }),
+        /** @type {import('rollup').OutputOptions} */
+        const umdOutputOption = {
+            format: 'umd',
+            name: umdName,
+            sourcemap: true,
+            inlineDynamicImports: true,
+        }
 
-        replace({
-            exclude: "node_modules/**",
-            ENV: JSON.stringify(process.env.NODE_ENV || "development"),
-        }),
+        /** @type {import('rollup').RollupOptions} */
+        const umdConfig = {
+            ...common,
+            output: [
+                {
+                    ...umdOutputOption,
+                    file: path.resolve('packages', key, 'dist/index.js'),
+                },
+                {
+                    ...umdOutputOption,
+                    file: path.resolve('packages', key, 'dist/index.min.js'),
+                    plugins: [terser()],
+                },
+            ],
+            external: Object.keys(pkg.peerDependencies || {}),
+        }
 
-        typescript({
-            sourceMap: !production,
-            inlineSources: !production,
-        }),
+        /** @type {import('rollup').RollupOptions} */
+        const es5Config = {
+            ...common,
+            input: path.resolve('packages', key, 'lib/index.js'),
+            output: [
+                {
+                    ...umdOutputOption,
+                    file: path.resolve('packages', key, 'dist/index.es5.js'),
+                },
+                {
+                    ...umdOutputOption,
+                    file: path.resolve(
+                        'packages',
+                        key,
+                        'dist/index.es5.min.js'
+                    ),
+                    plugins: [terser()],
+                },
+            ],
+            plugins: [
+                ...common.plugins,
+                babel({
+                    babelHelpers: 'runtime',
+                    extensions: ['.js', '.mjs', '.html', '.svelte'],
+                }),
+            ],
+        }
+        // return [es5Config];
 
-        !production && serve(),
-        !production &&
-            livereload({
-                watch: path.join(__dirname, "public"),
-                port: 4000,
-            }),
-        production && terser(),
-    ],
-    watch: {
-        clearScreen: false,
-    },
-};
+        if (umd) {
+            return [config, umdConfig, es5Config]
+        } else {
+            return [config]
+        }
+    })
+    .flat()
+
+// function serve() {
+//     let server
+
+//     function toExit() {
+//         if (server) server.kill(0)
+//     }
+
+//     return {
+//         writeBundle() {
+//             if (server) return
+//             server = require('child_process').spawn(
+//                 'npm',
+//                 ['run', 'start', '--', '--dev'],
+//                 {
+//                     stdio: ['ignore', 'inherit', 'inherit'],
+//                     shell: true,
+//                 }
+//             )
+
+//             process.on('SIGTERM', toExit)
+//             process.on('exit', toExit)
+//         },
+//     }
+// }
+
+// /** @type {import('rollup').RollupOptions} */
+// const styleCommon = {
+//   input: 'packages/bytemd/styles/index.scss',
+//   output: {
+//     file: 'style.js', // We don't need this file
+//   },
+// }
+
+// /** @type {import('rollup').RollupOptions[]} */
+// const styleConfigs = [
+//   {
+//     ...styleCommon,
+//     plugins: [
+//       postcss({
+//         extract: path.resolve(__dirname, 'packages/bytemd/dist/index.css'),
+//       }),
+//     ],
+//   },
+//   {
+//     ...styleCommon,
+//     plugins: [
+//       postcss({
+//         extract: path.resolve(__dirname, 'packages/bytemd/dist/index.min.css'),
+//         minimize: true,
+//       }),
+//     ],
+//   },
+// ]
+
+export default [...configs]
