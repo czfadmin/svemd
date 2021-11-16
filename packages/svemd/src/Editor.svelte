@@ -3,7 +3,8 @@
     import { EditorState } from '@codemirror/state'
     import { EditorView, keymap, ViewUpdate } from '@codemirror/view'
     import { Text } from '@codemirror/text'
-    import { defaultKeymap } from '@codemirror/commands'
+    import { defaultKeymap, indentWithTab } from '@codemirror/commands'
+
     import { onMount, onDestroy } from 'svelte'
     import { debounce } from 'lodash'
 
@@ -32,8 +33,8 @@
         let defaultState = EditorState.create({
             doc: debouncedValue,
             extensions: [
-                keymap.of(defaultKeymap),
-                EditorState.tabSize.of(16),
+                keymap.of([...defaultKeymap, indentWithTab]),
+                EditorState.tabSize.of(4),
                 autocompletion(),
                 EditorView.updateListener.of((update: ViewUpdate) => {
                     if (update.docChanged) {
@@ -82,7 +83,7 @@
         display: flex;
         width: 100%;
         flex-direction: column;
-        height: calc(100vh - 50px);
+        height: calc(100vh - 200px);
         .editor-container {
             width: 100%;
             display: flex;

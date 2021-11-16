@@ -1,0 +1,30 @@
+{
+    "name": "@svemd/plugin-katex",
+    "version": "1.0.0",
+    "description": "",
+    "main": "dist/index.cjs.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "module": "dist/index.esm.js",
+    "unpkg": "dist/index.min.js",
+    "jsdelivr": "dist/index.min.js",
+    "types": "lib/index.d.ts",
+    "keywords": [],
+    "author": "czfadmin",
+    "license": "ISC",
+    "dependencies": {
+        "rehype-katex": "^6.0.1",
+        "unified": "^10.1.0"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/czfadmin/svemd.git",
+        "directory": "packages/plugin-highlight"
+    },
+    "files": [
+        "dist",
+        "lib"
+    ],
+    "packageManager": "pnpm"
+}

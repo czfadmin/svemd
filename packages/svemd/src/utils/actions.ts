@@ -24,7 +24,7 @@ function wrapText(editor: EditorView, level: number) {
     })
 }
 
-function wrapTextWithBold(editor: EditorView, type: 'Bold' | 'Italic') {
+function wrapTextWithBoldOrItalic(editor: EditorView, type: 'Bold' | 'Italic') {
     let mark
     if (type === 'Bold') {
         mark = '**'
@@ -47,16 +47,28 @@ function wrapTextWithBold(editor: EditorView, type: 'Bold' | 'Italic') {
         }
 
         editor.dispatch(spec)
-
     }
 }
 
+function addList(editor: EditorView, type: 'ul' | 'ol') {
+    const pos = editor.state.doc.length
+    let mark = '-'
+    if (mark === 'ol') {
+        mark = '1.'
+    }
+    const spec: ChangeSpec = {
+        from: pos,
+        to: pos,
+        insert: `\n${mark}`,
+    }
+    editor.dispatch({ changes: spec })
+}
+
+function addKatex(editor: EditorView, text: string) {}
+
+function addMath(editor: EditorView, text: string) {}
+
 export const defaultActions: ISvemdAction[] = [
-    {
-        type: 'svemd-action-open-url',
-        label: 'Open URL',
-        action: (context: ISvemdActionContext) => {},
-    },
     {
         type: 'svemd-action-h1',
         label: 'H1',
@@ -103,14 +115,66 @@ export const defaultActions: ISvemdAction[] = [
         type: 'svemd-action-bold',
         label: 'B',
         action: (context: ISvemdActionContext) => {
-            wrapTextWithBold(context.editor, 'Bold')
+            wrapTextWithBoldOrItalic(context.editor, 'Bold')
         },
     },
     {
         type: 'svemd-action-Italic',
         label: 'I',
         action: (context: ISvemdActionContext) => {
-            wrapText(context.editor, 6)
+            wrapTextWithBoldOrItalic(context.editor, 'Italic')
+        },
+    },
+    {
+        type: 'svemd-action-order-list',
+        label: 'ol',
+        action: (context: ISvemdActionContext) => {
+            addList(context.editor, 'ol')
+        },
+    },
+    {
+        type: 'svemd-action-list',
+        label: 'ul',
+        action: (context: ISvemdActionContext) => {
+            addList(context.editor, 'ul')
+        },
+    },
+    {
+        type: 'svemd-action-math',
+        label: 'M',
+        action: (context: ISvemdActionContext) => {
+            addMath(context.editor, 'Italic')
+        },
+    },
+    {
+        type: 'svemd-action-Katex',
+        label: 'K',
+        action: (context: ISvemdActionContext) => {
+            addKatex(context.editor, 'Italic')
+        },
+    },
+]
+
+export const advancedActions: ISvemdAction[] = [
+    {
+        type: 'svemd-action-split',
+        label: 'split',
+        action: (context: ISvemdActionContext) => {
+            wrapTextWithBoldOrItalic(context.editor, 'Italic')
+        },
+    },
+    {
+        type: 'svemd-action-help',
+        label: 'help',
+        action: (context: ISvemdActionContext) => {
+            wrapTextWithBoldOrItalic(context.editor, 'Italic')
+        },
+    },
+    {
+        type: 'svemd-action-toc',
+        label: 'Toc',
+        action: (context: ISvemdActionContext) => {
+            wrapTextWithBoldOrItalic(context.editor, 'Italic')
         },
     },
 ]
