@@ -1,18 +1,16 @@
 <script lang="ts">
     import { EditorView } from '@codemirror/view'
 
-    import { ISvemdAction } from './types/actions'
+    import { ISvemdAction, ISvemdActionContext } from './types/actions'
     import { advancedActions } from './utils/actions'
 
-    export let editor: EditorView
     export let actions: ISvemdAction[] = []
+    export let svemdCtx: ISvemdActionContext
 
     function handleAction(action: ISvemdAction) {
         const { action: _innerAction } = action
         if (_innerAction) {
-            _innerAction({
-                editor,
-            })
+            _innerAction(svemdCtx)
         }
     }
 </script>

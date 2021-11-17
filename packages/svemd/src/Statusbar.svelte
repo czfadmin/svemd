@@ -4,6 +4,10 @@
     export let debouncedValue: Text
     export let syncDoc: boolean = false
 
+    function handleScrollToTop() {
+        // TODO: scroll to top
+    }
+
     $: count = (() => {
         let count = 0
         if (debouncedValue) {
@@ -37,6 +41,7 @@
             />
             <label for="svemd-sync-doc">Sync Doc</label>
         </div>
+        <p on:click={handleScrollToTop}>Scroll to Top</p>
     </div>
 </div>
 
@@ -44,12 +49,19 @@
     .statusbar {
         display: flex;
         width: 100%;
+        .statusbar-right {
+            display: flex;
+            align-items: center;
+            p {
+                margin-left: 0.25rem;
+            }
+        }
     }
     .container {
         input {
             padding: 0;
-            margin: 0  !important;
-            margin-right:0.2rem;
+            margin: 0 !important;
+            margin-right: 0.2rem;
         }
         display: flex;
         align-items: center;

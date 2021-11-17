@@ -4,6 +4,7 @@
     import { EditorView, keymap, ViewUpdate } from '@codemirror/view'
     import { Text } from '@codemirror/text'
     import { defaultKeymap, indentWithTab } from '@codemirror/commands'
+    import type { Image } from 'mdast'
 
     import { onMount, onDestroy } from 'svelte'
     import { debounce } from 'lodash'
@@ -13,7 +14,7 @@
     import Statusbar from './Statusbar.svelte'
     import Toolbar from './Toolbar.svelte'
     import { SvemdPlugin } from './types/plugins'
-    import { ISvemdAction } from './types/actions'
+    import { ISvemdAction, ISvemdActionContext } from './types/actions'
     import { defaultActions } from './utils/actions'
 
     let editor: EditorView
@@ -22,6 +23,9 @@
     // props
     export let value: string = `Hello World`
     export let plugins: SvemdPlugin[] = []
+    export let uploadImages: (
+        files: File[]
+    ) => Promise<Pick<Image, 'url' | 'title' | 'alt'>[]>
 
     let debouncedValue = Text.of([value])
 
@@ -65,10 +69,14 @@
     })()
 
     $: _actions = [...defaultActions, ...actions]
+    $: ctx = {
+        editor,
+        uploadImages,
+    } as ISvemdActionContext
 </script>
 
 <div class="container">
-    <Toolbar actions={_actions} {editor} />
+    <Toolbar actions={_actions} svemdCtx={ctx} />
     <div class="editor-container">
         <div id="svemd-editor" style={styles.edit} class="svemd-editor" />
         <div style={styles.preview} class="svemd-viewer">

@@ -19,6 +19,7 @@
     },
     "dependencies": {
         "svemd": "latest",
+        "@svemd/plugin-gfm": "latest",
         "sirv-cli": "^1.0.0"
     }
 }

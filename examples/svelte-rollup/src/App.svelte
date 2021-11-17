@@ -1,10 +1,11 @@
 <script lang="ts">
     import { Editor } from 'svemd'
+    import gfm from '@svemd/plugin-gfm'
     export let name
 </script>
 
 <main>
-    <Editor/>
+    <Editor plugins={[gfm()]}/>
 </main>
 
 <style>
