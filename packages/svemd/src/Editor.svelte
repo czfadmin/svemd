@@ -31,7 +31,7 @@
 
     const setDebouncedValue = debounce((doc: Text) => {
         debouncedValue = doc
-    }, 30)
+    }, 300)
 
     onMount(() => {
         let defaultState = EditorState.create({
@@ -75,11 +75,11 @@
     } as ISvemdActionContext
 </script>
 
-<div class="container">
+<div class="svemd-editor-container ">
     <Toolbar actions={_actions} svemdCtx={ctx} />
     <div class="editor-container">
         <div id="svemd-editor" style={styles.edit} class="svemd-editor" />
-        <div style={styles.preview} class="svemd-viewer">
+        <div style={styles.preview} class="svemd-viewer-container">
             <Viewer value={debouncedValue} {plugins} />
         </div>
     </div>
@@ -87,15 +87,21 @@
 </div>
 
 <style lang="less">
-    .container {
+    .svemd-editor-container {
         display: flex;
-        width: 100%;
+        margin: .25rem;
         flex-direction: column;
-        height: calc(100vh - 200px);
+        border: 1px solid #ccc;
+        border-radius: 4px;
+
         .editor-container {
             width: 100%;
             display: flex;
             min-height: 100%;
+            .svemd-editor {
+                padding: .5rem;
+                border-right: 1px solid #ccc;
+            }
         }
     }
 </style>

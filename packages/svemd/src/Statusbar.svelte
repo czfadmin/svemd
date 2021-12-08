@@ -26,7 +26,7 @@
     })()
 </script>
 
-<div class="statusbar">
+<div class="svemd-statusbar">
     <p>Word Count: {count}</p>
     <span style="flex:1" />
     <div class="statusbar-right">
@@ -41,30 +41,31 @@
             />
             <label for="svemd-sync-doc">Sync Doc</label>
         </div>
-        <p on:click={handleScrollToTop}>Scroll to Top</p>
+        <p on:click={handleScrollToTop} style="margin-left:.25rem;">Scroll to Top</p>
     </div>
 </div>
 
 <style lang="less">
-    .statusbar {
+    .svemd-statusbar {
         display: flex;
-        width: 100%;
+        height: auto;
+        border-top: 1px solid #ccc;
+        padding-left: 0.5rem;
+        padding-right: 0.5rem;
         .statusbar-right {
             display: flex;
             align-items: center;
-            p {
-                margin-left: 0.25rem;
+            justify-content: space-around;
+        }
+        .container {
+            input {
+                padding: 0;
+                margin: 0 !important;
+                margin-right: 0.2rem;
             }
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
-    }
-    .container {
-        input {
-            padding: 0;
-            margin: 0 !important;
-            margin-right: 0.2rem;
-        }
-        display: flex;
-        align-items: center;
-        justify-content: center;
     }
 </style>

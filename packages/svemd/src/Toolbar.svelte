@@ -15,38 +15,54 @@
     }
 </script>
 
-<div class="toolbar">
-    <div class="basic-actions">
+<div class="svemd-toolbar">
+    <div class="svemd-left-actions">
         {#each actions as action, index (action.label)}
-            <button on:click={(e) => handleAction(action)}
-                >{action.label}</button
-            >
+            <i on:click={(e) => handleAction(action)}>{action.label}</i>
         {/each}
     </div>
     <span style="flex:1" />
-    <div class="advanced-actions">
+    <div class="svemd-right-actions">
         {#each advancedActions as action, index (action.label)}
-            <button on:click={(e) => handleAction(action)}
-                >{action.label}</button
-            >
+            <i on:click={(e) => handleAction(action)}>{action.label}</i>
         {/each}
     </div>
 </div>
 
 <style lang="less">
-    .toolbar,
-    .basic-actions,
-    .advanced-actions {
+    .svemd-toolbar {
         display: flex;
         flex-direction: row;
-        flex-wrap: unset;
-        justify-content: flex-start;
         align-items: center;
-        background-color: #fafafa;
-        border-bottom: 1px solid #e0e0e0;
-    }
-    .basic-actions,
-    .advanced-actions {
-        width: auto;
+        justify-content: space-between;
+        padding: 0.5rem;
+        border-bottom: 1px solid #ccc;
+        .svemd-right-actions,
+        .svemd-left-actions {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: unset;
+            justify-content: flex-start;
+            align-items: center;
+            width: auto;
+            i {
+                padding: 0.25rem;
+                margin: auto .1rem;
+                font-style: normal;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+
+                &:hover {
+                    background-color: #e0e0e0;
+                    cursor: pointer;
+                    border-radius: 4px;
+                }
+                &:active {
+                    background: gray;
+                    transition: background 0.2s;
+                }
+            }
+        }
     }
 </style>

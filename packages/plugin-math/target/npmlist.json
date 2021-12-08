@@ -1,0 +1,1 @@
+{"version":"1.0.0","name":"@svemd/plugin-math","dependencies":{"remark-math":{"version":"5.1.1"},"unified":{"version":"10.1.0"}}}
