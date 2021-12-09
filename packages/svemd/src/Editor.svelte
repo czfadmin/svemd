@@ -1,7 +1,12 @@
 <script lang="ts">
     import { autocompletion } from '@codemirror/autocomplete'
     import { EditorState } from '@codemirror/state'
-    import { EditorView, keymap, ViewUpdate } from '@codemirror/view'
+    import {
+        EditorView,
+        highlightActiveLine,
+        keymap,
+        ViewUpdate,
+    } from '@codemirror/view'
     import { Text } from '@codemirror/text'
     import { defaultKeymap, indentWithTab } from '@codemirror/commands'
     import type { Image } from 'mdast'
@@ -16,6 +21,7 @@
     import { SvemdPlugin } from './types/plugins'
     import { ISvemdAction, ISvemdActionContext } from './types/actions'
     import { defaultActions } from './utils/actions'
+    import { lightTheme } from './themes'
 
     let editor: EditorView
     let actions: ISvemdAction[] = []
@@ -38,6 +44,9 @@
             doc: debouncedValue,
             extensions: [
                 keymap.of([...defaultKeymap, indentWithTab]),
+                lightTheme,
+                highlightActiveLine(),
+                EditorView.lineWrapping,
                 EditorState.tabSize.of(4),
                 autocompletion(),
                 EditorView.updateListener.of((update: ViewUpdate) => {
@@ -89,17 +98,16 @@
 <style lang="less">
     .svemd-editor-container {
         display: flex;
-        margin: .25rem;
+        margin: 0.25rem;
         flex-direction: column;
         border: 1px solid #ccc;
         border-radius: 4px;
-
         .editor-container {
             width: 100%;
             display: flex;
             min-height: 100%;
             .svemd-editor {
-                padding: .5rem;
+                padding: 0.5rem;
                 border-right: 1px solid #ccc;
             }
         }

@@ -20,7 +20,7 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/czfadmin/svemd.git",
-    "directory": "packages/plugin-highlight"
+    "directory": "packages/plugin-math"
   },
   "files": [
     "dist",
