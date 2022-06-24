@@ -1,11 +1,13 @@
 <script lang="ts">
     import type { Text } from '@codemirror/text'
+    import { createEventDispatcher } from 'svelte'
 
     export let debouncedValue: Text
     export let syncDoc: boolean = false
 
+    const dispatch = createEventDispatcher()
     function handleScrollToTop() {
-        // TODO: scroll to top
+        dispatch('top')
     }
 
     $: count = (() => {
@@ -41,21 +43,36 @@
             />
             <label for="svemd-sync-doc">Sync Doc</label>
         </div>
-        <p on:click={handleScrollToTop} style="margin-left:.25rem;">Scroll to Top</p>
+        <p on:click={handleScrollToTop}>Scroll to Top</p>
     </div>
 </div>
 
 <style lang="less">
     .svemd-statusbar {
         display: flex;
-        height: auto;
         border-top: 1px solid #ccc;
         padding-left: 0.5rem;
         padding-right: 0.5rem;
+        font-size: 13px;
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        right: 0;
+        line-height: 24px;
+        align-items: center;
+        height: 24px;
         .statusbar-right {
             display: flex;
             align-items: center;
             justify-content: space-around;
+            height: 24px;
+            p,
+            label {
+                &:hover {
+                    color: blue;
+                    cursor: pointer;
+                }
+            }
         }
         .container {
             input {
@@ -66,6 +83,8 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            margin-left: 2px;
+            margin-right: 2px;
         }
     }
 </style>

@@ -3,6 +3,7 @@ import  {VFile} from "vfile";
 import { EditorView } from "@codemirror/view";
 
 export type SvemdEditor = EditorView;
+
 export interface SvemdEditorContext {
 
     editor: SvemdEditor;

@@ -1,7 +1,7 @@
 import { EditorView } from '@codemirror/view'
 import { ChangeSpec, SelectionRange, TransactionSpec } from '@codemirror/state'
-import { ISvemdAction, ISvemdActionContext } from './../types/actions'
-import selectFiles from 'select-files'
+import { ISvemdAction, ISvemdActionContext } from '../types'
+import { icons } from '../icons'
 
 function wrapText(editor: EditorView, before: string, after: string = '') {
     const state = editor.state
@@ -48,9 +48,13 @@ function addList(editor: EditorView, type: 'ul' | 'ol') {
     editor.focus()
 }
 
-function addKatex(editor: EditorView, text: string) {}
+function addKatex(editor: EditorView, text: string) {
+    editor.focus()
+}
 
-function addMath(editor: EditorView, text: string) {}
+function addMath(editor: EditorView, text: string) {
+    editor.focus()
+}
 
 function appendTable(editor: EditorView) {
     const pos = editor.state.doc.length
@@ -61,6 +65,7 @@ function appendTable(editor: EditorView) {
         insert: `\n${template}`,
     }
     editor.dispatch({ changes: spec })
+    editor.focus()
 }
 
 function appendImage(editor: EditorView) {
@@ -72,27 +77,9 @@ function appendImage(editor: EditorView) {
         insert: `\n${template}`,
     }
     editor.dispatch({ changes: spec })
+    editor.focus()
 }
 
-async function handleUploadImage(ctx: ISvemdActionContext, files: File[]) {
-    const originPos = ctx.editor.state.doc.length
-    const { uploadImages } = ctx
-    const imgs = await uploadImages(files)
-    const spec: ChangeSpec = {
-        from: originPos,
-        to: originPos,
-        insert: `\n${imgs
-            .map((img) => `![${img.title}](${img.url})`)
-            .join('\n')}`,
-    }
-    ctx.editor.dispatch({ changes: spec })
-    const newPos= ctx.editor.state.doc.length
-    ctx.editor.state.selection.replaceRange(SelectionRange.fromJSON({
-        from: originPos,
-        to:newPos
-    }))
-    ctx.editor.focus()
-}
 function appendCodeBlock(editor: EditorView) {
     const pos = editor.state.doc.length
     let template = '` `'
@@ -106,145 +93,123 @@ function appendCodeBlock(editor: EditorView) {
 
 export const defaultActions: ISvemdAction[] = [
     {
-        type: 'svemd-action-h1',
         label: 'H1',
-        action: (context: ISvemdActionContext) => {
-            wrapText(context.editor, '#')
+        icon: icons.h1,
+        handler: {
+            type: 'action',
+            click: (context: ISvemdActionContext) => {
+                wrapText(context.editor, '#')
+            },
         },
     },
     {
-        type: 'svemd-action-h2',
         label: 'H2',
-        action: (context: ISvemdActionContext) => {
-            wrapText(context.editor, '#'.repeat(2))
+        icon: icons.h2,
+        handler: {
+            type: 'action',
+            click: (context: ISvemdActionContext) => {
+                wrapText(context.editor, '#'.repeat(2))
+            },
         },
     },
     {
-        type: 'svemd-action-h3',
         label: 'H3',
-        action: (context: ISvemdActionContext) => {
-            wrapText(context.editor, '#'.repeat(3))
+        icon: icons.h3,
+        handler: {
+            type: 'action',
+            click: (context: ISvemdActionContext) => {
+                wrapText(context.editor, '#'.repeat(3))
+            },
         },
     },
     {
-        type: 'svemd-action-h4',
         label: 'h4',
-        action: (context: ISvemdActionContext) => {
-            wrapText(context.editor, '#'.repeat(4))
+        icon: icons.h4,
+        handler: {
+            type: 'action',
+            click: (context: ISvemdActionContext) => {
+                wrapText(context.editor, '#'.repeat(4))
+            },
         },
     },
     {
-        type: 'svemd-action-h5',
         label: 'h5',
-        action: (context: ISvemdActionContext) => {
-            wrapText(context.editor, '#'.repeat(5))
+        icon: icons.h5,
+        handler: {
+            type: 'action',
+            click: (context: ISvemdActionContext) => {
+                wrapText(context.editor, '#'.repeat(5))
+            },
         },
     },
     {
-        type: 'svemd-action-h6',
         label: 'h6',
-        action: (context: ISvemdActionContext) => {
-            wrapText(context.editor, '#'.repeat(6))
+        icon: icons.h6,
+        handler: {
+            type: 'action',
+            click: (context: ISvemdActionContext) => {
+                wrapText(context.editor, '#'.repeat(6))
+            },
         },
     },
     {
-        type: 'svemd-action-bold',
         label: 'B',
-        action: (context: ISvemdActionContext) => {
-            wrapText(context.editor, '**', '**')
+        icon: icons.bold,
+        handler: {
+            type: 'action',
+            click: (context: ISvemdActionContext) => {
+                wrapText(context.editor, '**', '**')
+            },
         },
     },
     {
-        type: 'svemd-action-Italic',
         label: 'I',
-        action: (context: ISvemdActionContext) => {
-            wrapText(context.editor, '*', '*')
+        icon: icons.italic,
+        handler: {
+            type: 'action',
+            click: (context: ISvemdActionContext) => {
+                wrapText(context.editor, '*', '*')
+            },
         },
     },
     {
-        type: 'svemd-action-order-list',
         label: 'ol',
-        action: (context: ISvemdActionContext) => {
-            addList(context.editor, 'ol')
+        icon: icons.ol,
+        handler: {
+            type: 'action',
+            click: (context: ISvemdActionContext) => {
+                addList(context.editor, 'ol')
+            },
         },
     },
     {
-        type: 'svemd-action-list',
         label: 'ul',
-        action: (context: ISvemdActionContext) => {
-            addList(context.editor, 'ul')
+        icon: icons.ul,
+        handler: {
+            type: 'action',
+            click: (context: ISvemdActionContext) => {
+                addList(context.editor, 'ul')
+            },
         },
     },
     {
-        type: 'svemd-action-math',
-        label: 'M',
-        action: (context: ISvemdActionContext) => {
-            addMath(context.editor, 'Italic')
-        },
-    },
-    {
-        type: 'svemd-action-Katex',
-        label: 'K',
-        action: (context: ISvemdActionContext) => {
-            addKatex(context.editor, 'Italic')
-        },
-    },
-    {
-        type: 'svemd-action-table',
-        label: 'Table',
-        action: (context: ISvemdActionContext) => {
-            appendTable(context.editor)
-        },
-    },
-    {
-        type: 'svemd-action-code',
         label: 'Code',
-        action: (context: ISvemdActionContext) => {
-            appendCodeBlock(context.editor)
+        icon: icons.code,
+        handler: {
+            type: 'action',
+            click: (context: ISvemdActionContext) => {
+                appendCodeBlock(context.editor)
+            },
         },
     },
     {
-        type: 'svemd-action-quote',
         label: 'quote',
-        action: (context: ISvemdActionContext) => {
-            wrapText(context.editor, '>')
-        },
-    },
-    {
-        type: 'svemd-action-image',
-        label: 'Image',
-        action: async (context: ISvemdActionContext) => {
-            const fileList = await selectFiles({
-                accept: 'image/*',
-                multiple: false,
-            })
-            if (fileList?.length) {
-                await handleUploadImage(context, Array.from(fileList))
-            }
-        },
-    },
-]
-
-export const advancedActions: ISvemdAction[] = [
-    {
-        type: 'svemd-action-split',
-        label: 'split',
-        action: (context: ISvemdActionContext) => {
-            // wrapTextWithBoldOrItalic(context.editor, 'Italic')
-        },
-    },
-    {
-        type: 'svemd-action-help',
-        label: 'help',
-        action: (context: ISvemdActionContext) => {
-            // wrapTextWithBoldOrItalic(context.editor, 'Italic')
-        },
-    },
-    {
-        type: 'svemd-action-toc',
-        label: 'Toc',
-        action: (context: ISvemdActionContext) => {
-            // wrapTextWithBoldOrItalic(context.editor, 'Italic')
+        icon: icons.quote,
+        handler: {
+            type: 'action',
+            click: (context: ISvemdActionContext) => {
+                wrapText(context.editor, '>')
+            },
         },
     },
 ]

@@ -16,18 +16,18 @@
         "packages/**"
     ],
     "devDependencies": {
-        "@babel/core": "^7.16.0",
-        "@babel/plugin-transform-runtime": "^7.16.4",
-        "@babel/preset-env": "^7.16.4",
+        "@babel/core": "^7.17.0",
+        "@babel/plugin-transform-runtime": "^7.17.0",
+        "@babel/preset-env": "^7.16.11",
         "@rollup/plugin-babel": "^5.3.0",
         "@rollup/plugin-commonjs": "^21.0.1",
         "@rollup/plugin-json": "^4.1.0",
-        "@rollup/plugin-node-resolve": "^13.0.6",
-        "@rollup/plugin-replace": "^3.0.0",
+        "@rollup/plugin-node-resolve": "^13.1.3",
+        "@rollup/plugin-replace": "^3.0.1",
         "@rollup/plugin-typescript": "^8.3.0",
         "@tsconfig/svelte": "^2.0.1",
-        "@vue/compiler-sfc": "^3.2.24",
-        "chokidar": "^3.5.2",
+        "@vue/compiler-sfc": "^3.2.29",
+        "chokidar": "^3.5.3",
         "cross-env": "^7.0.3",
         "fs-extra": "^10.0.0",
         "glob": "^7.2.0",
@@ -36,20 +36,24 @@
         "lodash": "^4.17.21",
         "mustache": "^4.2.0",
         "npm-run-all": "^4.1.5",
-        "rollup": "^2.61.0",
+        "rollup": "^2.67.0",
         "rollup-plugin-css-only": "^3.1.0",
         "rollup-plugin-livereload": "^2.0.5",
         "rollup-plugin-svelte": "^7.1.0",
         "rollup-plugin-terser": "^7.0.2",
         "rollup-plugin-vue": "^6.0.0",
         "sirv-cli": "^1.0.14",
-        "svelte-preprocess": "^4.9.8",
-        "typescript": "^4.5.2"
+        "svelte-preprocess": "^4.10.2",
+        "typescript": "^4.5.5"
     },
     "dependencies": {
-        "@codemirror/highlight": "^0.19.6",
-        "@popperjs/core": "^2.11.0",
-        "svelte": "^3.44.2"
+        "@codemirror/basic-setup": "^0.19.1",
+        "@codemirror/closebrackets": "^0.19.0",
+        "@codemirror/highlight": "^0.19.7",
+        "@popperjs/core": "^2.11.2",
+        "svelte": "^3.46.3",
+        "tippy.js": "^6.3.7",
+        "unist-util-visit": "^4.1.0"
     },
     "packageManager": "pnpm"
 }

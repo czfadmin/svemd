@@ -1,0 +1,171 @@
+@border-color: #e0e0e0;
+@sidebar-width: 280px;
+@primary: #5268e0;
+@gray: #e0dddd82;
+.svemd {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: auto;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    position: relative;
+
+    //  Editor
+    &-container {
+        display: flex;
+        width: 100%;
+        height: 100%;
+        max-height: max-content;
+        border-top: 1px solid #ccc;
+        .svemd-editor {
+            padding: 0.25rem;
+        }
+    }
+    &-fullscreen {
+        &.svemd {
+            z-index: 9999;
+            position: fixed;
+            left: 0;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            border: none;
+            height: 100vh !important; // override user set height
+        }
+    }
+    &-split {
+        .svemd-preview {
+            border-left: 1px solid #ccc;
+        }
+    }
+    &-hidden {
+        display: none !important;
+    }
+
+    // sidebar
+    &-sidebar {
+        display: inline-block;
+        vertical-align: top; // Safari
+        // height: 100%;
+        overflow: auto;
+        font-size: 16px;
+        border-left: 1px solid @border-color;
+        width: @sidebar-width;
+        position: relative;
+        padding: 0 16px;
+        &-close {
+            position: absolute;
+            padding: 16px;
+            top: 0;
+            right: 0;
+            cursor: pointer;
+            &:hover {
+                color: blue;
+            }
+        }
+        h2 {
+            font-size: 16px;
+            font-weight: 600;
+            margin: 32px 0 16px;
+        }
+        ul {
+            padding-left: 0;
+            color: gray;
+        }
+    }
+
+    // viewer
+    &-viewer {
+        width: 100%;
+        padding: 0.5rem;
+    }
+
+    // status bar
+    &-statusbar {
+        display: flex;
+        height: auto;
+        border-top: 1px solid #ccc;
+        padding-left: 0.5rem;
+        padding-right: 0.5rem;
+        font-size: 13px;
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        right: 0;
+        .statusbar-right {
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            p,
+            label {
+                &:hover {
+                    color: blue;
+                    cursor: pointer;
+                }
+            }
+        }
+        .container {
+            input {
+                padding: 0;
+                margin: 0 !important;
+                margin-right: 0.2rem;
+            }
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-left: 2px;
+            margin-right: 2px;
+        }
+    }
+
+    // TOC
+    &-toc {
+        li {
+            list-style: none;
+            margin-bottom: 4px;
+            font-size: 14px;
+            line-height: 2;
+            cursor: pointer;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+        &-active {
+            color: @primary;
+            background-color: @gray;
+            border-radius: 4px;
+            padding: 0.25rem;
+        }
+        &-first {
+            font-weight: 500;
+        }
+    }
+
+    // toolbar
+    &-toolbar {
+        display: flex;
+        .svemd-left-actions,
+        .svemd-right-actions {
+            display: flex;
+        }
+        .svemd-toolbar-icon {
+            // display: flex;
+            max-width: fit-content;
+            margin: 0.1rem;
+            padding: 0.25rem 0.35rem;
+            cursor: pointer;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            &:active {
+                background-color: rgb(226, 226, 226);
+            }
+            &:hover {
+                background-color: rgba(235, 233, 233, 0.904);
+            }
+        }
+        .svemd-tippy {
+            background: white;
+        }
+    }
+}

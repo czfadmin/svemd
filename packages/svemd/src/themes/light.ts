@@ -10,7 +10,7 @@ const lightTheme = EditorView.theme(
         },
     },
     {
-        dark: true,
+        dark: false,
     }
 )
 

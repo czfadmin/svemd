@@ -1,36 +1,29 @@
 <script lang="ts">
     import type { VFile } from 'vfile'
     import type { Text } from '@codemirror/text'
-    import type { SvemdPlugin } from './types/plugins'
     import getProcessor from './utils/parser'
-    import { afterUpdate, onDestroy } from 'svelte'
+    import { afterUpdate, createEventDispatcher, onDestroy, tick } from 'svelte'
+    import { ISvemdPlugin } from '.'
 
+    // props
     export let value: Text
-    export let plugins: SvemdPlugin[] = []
+    export let plugins: ISvemdPlugin[] = []
 
+    // variables
+    const dispatch = createEventDispatcher()
     let markdownBody: HTMLElement
     let file: VFile
     let i: number = 0
     let cbs: any[] = []
 
+    // methods
     function on() {
-        cbs = plugins.map((plugin) =>
-            plugin.viewerEffect?.({ markdownBody, file })
-        )
+        cbs = plugins.map((plugin) => plugin.viewerEffect?.({ markdownBody }))
     }
 
     function off() {
         cbs.forEach((cb) => cb?.())
     }
-
-    $: try {
-        file = getProcessor([...plugins]).processSync(value.toString().trim())
-        i++
-    } catch (e) {
-        console.log(e)
-    }
-
-    $: html = `${file}<!--${i}-->`
 
     afterUpdate(() => {
         off()
@@ -40,9 +33,30 @@
     onDestroy(() => {
         off()
     })
+
+    $: try {
+        file = getProcessor([
+            ...plugins,
+            {
+                rehype: (p) =>
+                    p.use(() => (tree: any, file: any) => {
+                        tick().then(() => {
+                            dispatch('hast', {
+                                hast: tree,
+                                file,
+                            })
+                        })
+                    }),
+            },
+        ]).processSync(value.toString().trim())
+        i++
+    } catch (e) {
+        console.log(e)
+    }
+    $: html = `${file}<!--${i}-->`
 </script>
 
-<div class="svemd-viewer" bind:this={markdownBody}>
+<div class="svemd-viewer markdown-body" bind:this={markdownBody}>
     {@html html}
 </div>
 
